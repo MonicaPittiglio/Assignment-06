@@ -1,0 +1,72 @@
+---
+title: "Assignment-06"
+author: "Monica Pittiglio"
+date: "8/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(datasets)
+library(plyr)
+library(tidyverse)
+library(kableExtra)
+library(knitr)
+library(readr)
+library(lattice)
+library(ggplot2)
+library(grid)
+library(directlabels)
+library(tidyquant)
+library(dplyr)
+```
+
+```{r, echo = FALSE, include = FALSE}
+# Load of COVID data from Our World in Data
+OWID <- read_csv("raw_data/owid-covid-data.csv")
+
+EDBD <- OWID %>%
+  filter("continent" == "Europe")
+```
+
+* Write a chunk that uses ggplot2 to create a scatter plot that compares the total deaths between all countries by diabetes prevalence.  Please use the ggplot2 linedraw theme for your plot and provide meaningful axis titles. What is your interpretation of this plot?'
+
+```{r, echo = FALSE, warning = FALSE}
+
+ggplot(OWID, aes(x = diabetes_prevalence, y = total_deaths)) +
+  geom_point() +
+  theme_linedraw()+
+  labs(x = "Diabetes Prevalence", y = "Total Deaths")
+```
+
+My interpretation of this plot is that countries with a diabetes prevelance of about 8% see the most total deaths.
+
+* Write a chunk that uses ggplot2 to create a scatter plot that compares the total deaths between all countries by the percentage of people over 70 years of age.  Please use the ggplot2 linedraw theme for your plot and provide meaningful axis titles. What is your interpretation of this plot?
+
+```{r, echo = FALSE, warning = FALSE}
+
+ggplot(OWID, aes(x = aged_70_older, y = total_deaths)) +
+  geom_point() +
+  theme_linedraw()+
+  labs(x = "Percentage of people over 70", y = "Total Deaths")
+```
+
+My interperitation of this plot is that the countries with the most toal deaths have only a small percentage of their population over age 70 - roughly 5.5%.
+
+* Write one last chuck that produces a line graph of the total number of deaths for each European country by date. Provide meaningful axis labels and color the lines by country name. Which country was the first to exceed 1,000 deaths? What date did that occur on?
+
+```{r, echo = FALSE, fig.height = 9, warning = FALSE}
+Ca <- filter(OWID, continent == "Europe")
+
+ggplot(Ca, aes(x = date, y = total_deaths, color = location)) +
+  geom_line() +
+  theme_linedraw()+
+  scale_y_log10() +
+  labs(x = "Date", y = "Total Deaths") +
+    geom_dl(aes(label = location), method = list(dl.combine("last.points")), cex = 0.8) +
+  coord_x_date(xlim = c("2019-12-15", "2020-11-01")) +
+  theme(legend.position = "none")
+```
+
+Italy was the first country to exceed 1000 deaths. This occurred on March 13th.
